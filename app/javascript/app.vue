@@ -5,6 +5,15 @@
         {{ memo.title }}： {{ memo.description }}
       </li>
     </ul>
+    <div>
+      <!-- v-model を使うことで、data () {}で定義したプロパティの値を更新できます。 -->
+      <!-- v-model はフォームに入力した値をdataオプションの中で該当するプロパティを自動的に更新します。 -->
+      <input v-model="title" placeholder="title">
+      <input v-model="description" placeholder="description">
+      <!-- 例:<button v-on:イベント名="関数"></button> -->
+      <!-- 省略例:<button @イベント名="関数"></button> -->
+      <button @click="addMemo">メモを追加</button>
+    </div>
   </div>
 </template>
 
@@ -16,7 +25,9 @@ export default {
   //今回メモ一覧情報のデータをmemosというプロパティに格納しています
   data: function () {
     return {
-      memos: "memos"
+      memos: "memos",
+      title: "",
+      description: "",
     }
   },
   // mounted() で、アプリが立ち上がった最初のタイミングで実行される関数を定義できます。
@@ -35,6 +46,16 @@ export default {
         // つまりresponse.data に呼び出したAPIの情報が入っています
         this.memos = response.data
       ))
+    },
+    addMemo: function() {
+      axios.post('/api/memos', {
+        title: this.title,
+        description: this.description
+      })
+      // .then()で通信が成功した際の処理を書きます。
+      .then(response => (
+        this.setMemo()
+      ));
     }
   }
 }
